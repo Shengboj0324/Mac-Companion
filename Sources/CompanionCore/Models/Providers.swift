@@ -55,35 +55,41 @@ public enum DisclosureMode: String, Codable, CaseIterable, Sendable {
 public struct DisclosurePolicy: Codable, Hashable, Sendable {
     public var mode: DisclosureMode
     public var allowedProviders: Set<ProviderID>
-    public init(mode: DisclosureMode = .askBeforeSending, allowedProviders: Set<ProviderID> = []) {
-        self.mode = mode; self.allowedProviders = allowedProviders
+    /// Further policies that must all permit disclosure (e.g. root ∧ project ∧ document).
+    public var constraints: [DisclosurePolicy]
+
+    public init(mode: DisclosureMode = .askBeforeSending, allowedProviders: Set<ProviderID> = [], constraints: [DisclosurePolicy] = []) {
+        self.mode = mode; self.allowedProviders = allowedProviders; self.constraints = constraints
     }
 
-    public enum Decision: Equatable, Sendable { case allow, ask, deny }
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        mode = try c.decode(DisclosureMode.self, forKey: .mode)
+        allowedProviders = try c.decode(Set<ProviderID>.self, forKey: .allowedProviders)
+        constraints = try c.decodeIfPresent([DisclosurePolicy].self, forKey: .constraints) ?? []
+    }
+
+    /// Ordered from most to least restrictive.
+    public enum Decision: Int, Equatable, Comparable, Sendable {
+        case deny = 0, ask = 1, allow = 2
+        public static func < (a: Decision, b: Decision) -> Bool { a.rawValue < b.rawValue }
+    }
 
     public func decision(for provider: ProviderID) -> Decision {
+        let own: Decision
         switch mode {
-        case .localOnly: return .deny
-        case .askBeforeSending: return allowedProviders.contains(provider) ? .allow : .ask
-        case .allowSelected: return allowedProviders.contains(provider) ? .allow : .deny
+        case .localOnly: own = .deny
+        case .askBeforeSending: own = allowedProviders.contains(provider) ? .allow : .ask
+        case .allowSelected: own = allowedProviders.contains(provider) ? .allow : .deny
         }
+        return constraints.reduce(own) { min($0, $1.decision(for: provider)) }
     }
 
-    /// Combining policies for a packet: the most restrictive wins.
+    /// Combining policies: a provider is allowed only if every source level allows it;
+    /// the most restrictive decision wins.
     public func intersect(_ other: DisclosurePolicy) -> DisclosurePolicy {
-        let order: [DisclosureMode] = [.localOnly, .allowSelected, .askBeforeSending]
-        let a = order.firstIndex(of: mode)!, b = order.firstIndex(of: other.mode)!
-        let mode = order[min(a, b)]
-        let providers: Set<ProviderID>
-        if self.mode == .askBeforeSending && other.mode == .askBeforeSending {
-            providers = allowedProviders.intersection(other.allowedProviders)
-        } else if self.mode == .askBeforeSending {
-            providers = other.allowedProviders
-        } else if other.mode == .askBeforeSending {
-            providers = allowedProviders
-        } else {
-            providers = allowedProviders.intersection(other.allowedProviders)
-        }
-        return DisclosurePolicy(mode: mode, allowedProviders: providers)
+        var r = self
+        r.constraints.append(other)
+        return r
     }
 }

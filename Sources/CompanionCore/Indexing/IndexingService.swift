@@ -206,7 +206,7 @@ public final class IndexingService: @unchecked Sendable {
         for row in rows {
             guard var asset = Self.decodeAsset(row) else { continue }
             let url = asset.url
-            if !ignoreStabilization, let m = asset.modifiedAt, now.timeIntervalSince(m) < stabilizationSeconds { continue }
+            if !ignoreStabilization, stabilizationSeconds > 0, let m = asset.modifiedAt, now.timeIntervalSince(m) < stabilizationSeconds { continue }
             guard FileManager.default.fileExists(atPath: url.path) else { handleDisappeared(asset.id); continue }
             if Self.isCloudPlaceholder(url) {
                 asset.indexStatus = .placeholder

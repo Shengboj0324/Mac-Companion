@@ -1,0 +1,237 @@
+{
+ "documentId": "doc123",
+ "title": "Literature Review Draft",
+ "revisionId": "rev-1",
+ "tabs": [
+  {
+   "tabProperties": {
+    "tabId": "t.0",
+    "title": "Draft",
+    "index": 0
+   },
+   "documentTab": {
+    "body": {
+     "content": [
+      {
+       "startIndex": 0,
+       "endIndex": 1,
+       "sectionBreak": {}
+      },
+      {
+       "startIndex": 1,
+       "endIndex": 14,
+       "paragraph": {
+        "paragraphStyle": {
+         "namedStyleType": "HEADING_1"
+        },
+        "elements": [
+         {
+          "startIndex": 1,
+          "endIndex": 14,
+          "textRun": {
+           "content": "Introduction\n"
+          }
+         }
+        ]
+       }
+      },
+      {
+       "startIndex": 14,
+       "endIndex": 60,
+       "paragraph": {
+        "paragraphStyle": {
+         "namedStyleType": "NORMAL_TEXT"
+        },
+        "elements": [
+         {
+          "startIndex": 14,
+          "endIndex": 60,
+          "textRun": {
+           "content": "Translation quality depends on grammar models.\n"
+          }
+         }
+        ]
+       }
+      },
+      {
+       "startIndex": 60,
+       "endIndex": 80,
+       "paragraph": {
+        "paragraphStyle": {
+         "namedStyleType": "NORMAL_TEXT"
+        },
+        "bullet": {
+         "listId": "l1"
+        },
+        "elements": [
+         {
+          "startIndex": 60,
+          "endIndex": 72,
+          "textRun": {
+           "content": "First point "
+          }
+         },
+         {
+          "startIndex": 72,
+          "endIndex": 79,
+          "textRun": {
+           "content": "source",
+           "textStyle": {
+            "link": {
+             "url": "https://example.org/paper"
+            }
+           }
+          }
+         },
+         {
+          "startIndex": 79,
+          "endIndex": 80,
+          "textRun": {
+           "content": "\n"
+          }
+         }
+        ]
+       }
+      },
+      {
+       "startIndex": 80,
+       "endIndex": 90,
+       "paragraph": {
+        "elements": [
+         {
+          "startIndex": 80,
+          "endIndex": 81,
+          "inlineObjectElement": {
+           "inlineObjectId": "img1"
+          }
+         },
+         {
+          "startIndex": 81,
+          "endIndex": 82,
+          "equation": {}
+         },
+         {
+          "startIndex": 82,
+          "endIndex": 90,
+          "textRun": {
+           "content": "Figure.\n"
+          }
+         }
+        ]
+       }
+      },
+      {
+       "startIndex": 90,
+       "endIndex": 120,
+       "table": {
+        "rows": 1,
+        "columns": 2,
+        "tableRows": [
+         {
+          "startIndex": 91,
+          "endIndex": 119,
+          "tableCells": [
+           {
+            "content": [
+             {
+              "startIndex": 92,
+              "endIndex": 100,
+              "paragraph": {
+               "elements": [
+                {
+                 "textRun": {
+                  "content": "Study A\n"
+                 }
+                }
+               ]
+              }
+             }
+            ]
+           },
+           {
+            "content": [
+             {
+              "startIndex": 101,
+              "endIndex": 118,
+              "paragraph": {
+               "elements": [
+                {
+                 "textRun": {
+                  "content": "Accuracy 80%\n"
+                 }
+                }
+               ]
+              }
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "childTabs": [
+    {
+     "tabProperties": {
+      "tabId": "t.1",
+      "title": "Notes",
+      "index": 0,
+      "nestingLevel": 1
+     },
+     "documentTab": {
+      "body": {
+       "content": [
+        {
+         "startIndex": 1,
+         "endIndex": 30,
+         "paragraph": {
+          "elements": [
+           {
+            "startIndex": 1,
+            "endIndex": 30,
+            "textRun": {
+             "content": "Nested tab notes about gaps.\n"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "tabProperties": {
+    "tabId": "t.2",
+    "title": "Matrix",
+    "index": 1
+   },
+   "documentTab": {
+    "body": {
+     "content": [
+      {
+       "startIndex": 1,
+       "endIndex": 25,
+       "paragraph": {
+        "elements": [
+         {
+          "startIndex": 1,
+          "endIndex": 25,
+          "textRun": {
+           "content": "Synthesis matrix themes\n"
+          }
+         }
+        ]
+       }
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

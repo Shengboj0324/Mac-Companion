@@ -49,10 +49,17 @@ public struct PlacementSuggester: Sendable {
             } else { if !cur.isEmpty { words.append(cur) }; cur = "" }
         }
         if !cur.isEmpty { words.append(cur) }
-        return Set(words.map { $0.lowercased() }.filter { $0.count >= 2 && !stopwords.contains($0) && Int($0) == nil })
+        return Set(words.map { stem($0.lowercased()) }.filter { $0.count >= 2 && !stopwords.contains($0) && Int($0) == nil })
     }
 
-    public func suggest(fileName: String, context: Context, maxCandidates: Int = 3, minScore: Double = 0.35) -> PlacementSuggestion {
+    /// Light plural stemming so "cells" matches "cell".
+    static func stem(_ w: String) -> String {
+        if w.count > 4, w.hasSuffix("ies") { return String(w.dropLast(3)) + "y" }
+        if w.count > 3, w.hasSuffix("s"), !w.hasSuffix("ss"), !w.hasSuffix("us"), !w.hasSuffix("is") { return String(w.dropLast()) }
+        return w
+    }
+
+    public func suggest(fileName: String, context: Context, maxCandidates: Int = 3, minScore: Double = 0.25) -> PlacementSuggestion {
         let fileTokens = Self.tokens((fileName as NSString).deletingPathExtension)
         let ext = (fileName as NSString).pathExtension.lowercased()
         var byFolder: [String: [String]] = [:]

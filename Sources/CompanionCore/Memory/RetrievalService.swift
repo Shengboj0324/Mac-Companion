@@ -49,7 +49,7 @@ public final class RetrievalService: @unchecked Sendable {
             guard let m = memory.memory(itemID), m.status != .superseded else { return nil }
             var policy = project
             if !m.allowedProviders.isEmpty { policy = DisclosurePolicy(mode: .allowSelected, allowedProviders: m.allowedProviders).intersect(project) }
-            if m.sensitivity == .sensitive && policy.mode == .allowSelected { policy.mode = .askBeforeSending }
+            if m.sensitivity == .sensitive { policy = policy.intersect(DisclosurePolicy(mode: .askBeforeSending)) }
             return (policy, SourceRef(kind: .user, id: m.id.uuidString, title: m.kind.label, locator: m.provenance.label, retrievedAt: m.observedAt),
                     m.sensitivity == .neverSend)
         case .checkpoint:

@@ -162,15 +162,18 @@ public enum FilingAnalyzer {
                                     evidence: zip(paths, stems).filter { style.0 == "spaces" ? $0.1.contains(" ") : $0.1.contains(style.0 == "underscores" ? "_" : "-") }.map(\.0),
                                     count: style.1))
         }
-        // Hierarchy: year folders at depth 1 or 2.
+        // Hierarchy: years at the top level, or years inside a top-level folder.
         let comps = paths.map { $0.split(separator: "/").map(String.init) }
-        for depth in 0..<2 {
-            let atDepth = comps.filter { $0.count > depth + 1 }.map { $0[depth] }
-            let yearCount = atDepth.filter { matches(yearFolder, $0) }.count
-            if atDepth.count >= 4, Double(yearCount) / Double(atDepth.count) >= 0.6 {
-                findings.append(Finding(field: .hierarchy, statement: depth == 0 ? "Top-level folders are years" : "Projects are organized first, then by year",
-                                        evidence: comps.filter { $0.count > depth + 1 && matches(yearFolder, $0[depth]) }.map { $0.joined(separator: "/") },
-                                        count: yearCount))
+        let topLevel = Set(comps.filter { $0.count > 1 }.map { $0[0] })
+        if topLevel.count >= 2, Double(topLevel.filter { matches(yearFolder, $0) }.count) / Double(topLevel.count) >= 0.6 {
+            findings.append(Finding(field: .hierarchy, statement: "Top-level folders are years", evidence: topLevel.sorted(), count: topLevel.count))
+        }
+        for top in topLevel.sorted() {
+            let children = Set(comps.filter { $0.count > 2 && $0[0] == top }.map { $0[1] })
+            let years = children.filter { matches(yearFolder, $0) }
+            if children.count >= 2, Double(years.count) / Double(children.count) >= 0.6 {
+                findings.append(Finding(field: .hierarchy, statement: "Within “\(top)”, work is organized by year",
+                                        evidence: years.sorted().map { "\(top)/\($0)" }, count: years.count))
             }
         }
         // Placement: subfolders that consistently hold one kind of file (e.g. Readings → PDFs, Drafts → docx).

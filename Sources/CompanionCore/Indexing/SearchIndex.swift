@@ -146,7 +146,7 @@ public final class SearchIndex: @unchecked Sendable {
     static func terms(_ query: String) -> [String] {
         query.lowercased()
             .components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .filter { !$0.isEmpty }
+            .filter { !$0.isEmpty && !["and", "or", "not", "near"].contains($0) }
             .prefix(12)
             .map { String($0) }
     }

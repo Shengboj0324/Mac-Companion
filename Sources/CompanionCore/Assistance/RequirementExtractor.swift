@@ -35,9 +35,18 @@ public struct RequirementExtractor: Sendable {
     public func extract(_ description: String) -> (requirements: [ExtractedRequirement], deadlines: [ExtractedDeadline]) {
         var out: [ExtractedRequirement] = []
         var deadlines: [ExtractedDeadline] = []
+        var lastProblemSection: String?? = nil
         for sentence in Self.sentences(description) {
             let lower = sentence.lowercased()
             let isOptional = Self.optionalMarkers.contains { lower.contains($0) }
+
+            // "Optional: 53, 54." directly after a problem list continues that list.
+            if isOptional, let section = lastProblemSection, let numbers = Self.bareNumberList(sentence) {
+                let prefix = section.map { "Section \($0) " } ?? ""
+                for n in numbers { out.append(.init(text: "\(prefix)problem \(n)", status: .optional, evidence: sentence, note: nil)) }
+                continue
+            }
+            lastProblemSection = nil
 
             // Problem lists → one item per problem, never inventing their statements.
             let problems = Self.problemNumbers(in: sentence)
@@ -50,6 +59,7 @@ public struct RequirementExtractor: Sendable {
                 for n in problems.optional {
                     out.append(.init(text: "\(section)problem \(n)", status: .optional, evidence: sentence, note: nil))
                 }
+                lastProblemSection = .some(Self.section(in: sentence))
                 continue
             }
 
@@ -111,6 +121,22 @@ public struct RequirementExtractor: Sendable {
         return result.map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "•-*· ")) }
     }
 
+    /// "Optional: 53, 54." → [53, 54]; nil if the sentence contains other words.
+    static func bareNumberList(_ s: String) -> [Int]? {
+        var rest = s.lowercased()
+        for m in optionalMarkers { rest = rest.replacingOccurrences(of: m, with: " ") }
+        for w in ["and", "problems", "problem", "also", "&"] { rest = rest.replacingOccurrences(of: w, with: " ") }
+        let tokens = rest.components(separatedBy: CharacterSet(charactersIn: " ,;:.()#")).filter { !$0.isEmpty }
+        guard !tokens.isEmpty else { return nil }
+        var out: [Int] = []
+        for t in tokens {
+            let parts = t.split(separator: "-")
+            if parts.count == 2, let a = Int(parts[0]), let b = Int(parts[1]), a <= b, b - a <= 50 { out += Array(a...b) }
+            else if let n = Int(t) { out.append(n) } else { return nil }
+        }
+        return out
+    }
+
     static func section(in s: String) -> String? {
         guard let r = s.range(of: #"(?i)(section|§)\s*(\d+(\.\d+)*)"#, options: .regularExpression) else { return nil }
         return s[r].components(separatedBy: CharacterSet(charactersIn: "0123456789.").inverted).filter { !$0.isEmpty }.first
@@ -118,7 +144,8 @@ public struct RequirementExtractor: Sendable {
 
     /// Finds "problems 1, 5, 9-11 and 50" lists; numbers after "optional" go to optional.
     static func problemNumbers(in s: String) -> (required: [Int], optional: [Int]) {
-        guard let start = s.range(of: #"(?i)\b(problems?|exercises?|questions?|#)\s*"#, options: .regularExpression) else { return ([], []) }
+        guard let start = s.range(of: #"(?i)\b(problems?|exercises?|questions?)\s*"#, options: .regularExpression)
+                ?? s.range(of: #"(?:^|\s)#\s*(?=\d)"#, options: .regularExpression) else { return ([], []) }
         let tail = String(s[start.upperBound...])
         var required: [Int] = [], optional: [Int] = []
         var inOptional = false
