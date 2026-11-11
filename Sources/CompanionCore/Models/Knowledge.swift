@@ -130,6 +130,12 @@ public struct ChatMessage: Identifiable, Codable, Hashable, Sendable {
     /// Opaque provider continuation state — only ever replayed to the same adapter.
     public var adapterState: String?
     public let createdAt: Date
+
+    public init(id: UUID, conversationID: UUID, role: ChatRole, content: String, provider: ProviderID?, model: String?,
+                sourceRefs: [SourceRef], adapterState: String?, createdAt: Date) {
+        self.id = id; self.conversationID = conversationID; self.role = role; self.content = content; self.provider = provider
+        self.model = model; self.sourceRefs = sourceRefs; self.adapterState = adapterState; self.createdAt = createdAt
+    }
 }
 
 public struct Conversation: Identifiable, Codable, Hashable, Sendable {

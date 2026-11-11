@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Companion</string>
+	<key>CFBundleExecutable</key>
+	<string>Companion</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>__BUNDLE_ID__</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Companion</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>__VERSION__</string>
+	<key>CFBundleVersion</key>
+	<string>__BUILD__</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.productivity</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>LSMultipleInstancesProhibited</key>
+	<true/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Companion reads the calendars you select to prepare study materials before scheduled sessions. It never changes a calendar unless you designate it and approve each change.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Companion reads the calendars you select to prepare study materials before scheduled sessions.</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 Companion contributors.</string>
+	<key>GoogleOAuthClientID</key>
+	<string>__GOOGLE_CLIENT_ID__</string>
+	<key>GoogleOAuthClientSecret</key>
+	<string>__GOOGLE_CLIENT_SECRET__</string>
+	<key>GooglePickerURL</key>
+	<string>__GOOGLE_PICKER_URL__</string>
+	<key>CompanionReleaseChannel</key>
+	<string>__CHANNEL__</string>
+</dict>
+</plist>
